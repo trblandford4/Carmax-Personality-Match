@@ -1,6 +1,5 @@
 <?php
     include_once 'includes/register.php';
-    include_once 'includes/functions.php';
 ?>
 
 <!DOCTYPE html>
@@ -64,18 +63,33 @@
     ?>
     <div id="login-page" class="row">
         <div class="col s12 z-depth-4 card-panel">
-            <form class="login-form" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" 
-                method="post" 
-                name="registration_form">
+            <form class="login-form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <div class="row">
                     <div class="input-field col s12 center">
                         <h4>Register</h4>
                         <p class="center">Join to our community now !</p>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="mdi-social-person prefix"></i>
+                        <input id="first_name" name="first_name" type="text">
+                        <label for="first_name">First Name</label>
+                    </div>
+                    <div class="input-field col s6">
+
+                        <input id="last_name" name="last_name" type="text">
+                        <label for="last_name">Last Name</label>
+                    </div>
+                </div>
+                <div class="input-field col s12">
+                    <i class="mdi-action-today prefix"></i>
+                    <input type="date" class="datepicker">
+                    <label for="dob">Birthday</label>
+                </div>
                 <div class="row margin">
                     <div class="input-field col s12">
-                        <i class="mdi-social-person-outline prefix"></i>
+                        <i class="mdi-action-account-box prefix"></i>
                         <input id="username" name="username" type="text">
                         <label for="username" class="center-align">Username</label>
                     </div>
@@ -97,24 +111,26 @@
                 <div class="row margin">
                     <div class="input-field col s12">
                         <i class="mdi-action-lock-outline prefix"></i>
-                        <input id="confirmpwd" type="password">
-                        <label for="confirmpwd">Password again</label>
+                        <input id="cpassword" name="cpassword" type="password">
+                        <label for="cpassword">Confirm Password</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <a href="user-survey.html" 
-                            class="btn blue lighten-2 waves-effect waves-light col s12" 
-                            onclick="return regformhash(this.form,
-                                   this.form.username,
-                                   this.form.email,
-                                   this.form.password,
-                                   this.form.confirmpwd);">
-                            Register Now
-                        </a>
+                        <button class="btn blue lighten-2 waves-effect waves-light col s12" type="submit" name="submit">Register
+                        </button>
                     </div>
+
+                </div>
+                <!--                <div class="row">-->
+                <!--                    <div class="input-field col s12 m12 l12  login-text">-->
+                <!--                        <input type="checkbox" id="remember" name="remember" value="yes" />-->
+                <!--                        <label for="remember">Remember me</label>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <div class="row">
                     <div class="input-field col s12">
-                        <p class="margin center medium-small sign-up">Already have an account? <a href="user-login.html">Login</a></p>
+                        <p class="margin center medium-small sign-up">Already have an account? <a href="user-login.php">Login</a></p>
                     </div>
                 </div>
             </form>
@@ -138,6 +154,14 @@
 
     <!--plugins.js - Some Specific JS codes for Plugin Settings-->
     <script type="text/javascript" src="js/plugins.js"></script>
+
+    <script>
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 117, // Creates a dropdown of 15 years to control year
+            max: 'Today'
+        });
+    </script>
 
 </body>
 

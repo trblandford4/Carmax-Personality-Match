@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php
+session_start();
+$userID = $_SESSION['userID'];
+$username = $_SESSION['username'];
+$fname = $_SESSION['fname'];
+$lname = $_SESSION['lname'];
+$salesAgent = $_SESSION['salesAgent'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -110,24 +117,32 @@
                                 <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="user-login.html"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
+                                <li><a href="logout.php"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                                 </li>
                             </ul>
                             <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#"
-                               data-activates="profile-dropdown"><?php echo $username ?><i
+                               data-activates="profile-dropdown"><?php echo $fname . ' ' . $lname; ?><i
                                         class="mdi-navigation-arrow-drop-down right"></i></a>
                         </div>
                     </div>
                 </li>
-                <li class="bold active"><a href="vehicle-listings.php" class="waves-effect waves-cyan"><i
+                <li class="bold active"><a href="user-vehicle-listings.php" class="waves-effect waves-cyan"><i
                                 class="mdi-action-dashboard"></i> Dashboard</a>
                 </li>
                 <li class="bold"><a href="vehicle-listings.php" class="waves-effect waves-cyan"><i
                                 class="mdi-maps-directions-car"></i> All Vehicles</a>
                 </li>
-                <li class="bold"><a href="user-survey.php" class="waves-effect waves-cyan"><i
-                                class="mdi-social-whatshot"></i> Recommendation Quiz</a>
-                </li>
+                <?php
+                if ($_SESSION['salesAgent']) {
+                    echo '<li><a href="manage-vehicles.php"><i class="mdi-action-receipt"></i>Manage Vehicles</a>
+                        </li>';
+                }
+                else {
+                    echo '<li class="bold"><a href="user-survey.php" class="waves-effect waves-cyan"><i
+                            class="mdi-social-whatshot"></i> Recommendation Quiz</a>
+                        </li>';
+                }
+                ?>
 <!--                <li class="li-hover">-->
 <!--                    <div class="divider"></div>-->
 <!--                </li>-->
@@ -177,7 +192,7 @@
                         <div class="col s12 m12 l12">
                             <h5 class="breadcrumbs-title">Full Vehicle Inventory</h5>'
                             <ol class="breadcrumb">
-                                <li><a href="index.html">Dashboard</a></li>
+                                <li><a href="user-vehicle-listings.php">Dashboard</a></li>
                                 <li class="active">Survey</li>
                             </ol>
                         </div>

@@ -46,68 +46,6 @@ $salesAgent = $_SESSION['salesAgent'];
 
 require_once("includes/db-connect.php");
 connectDB();
-
-if(!$salesAgent) {
-// Get form responses
-    $responses = array(0, 0, 0, 0, 0);
-    $responses[0] = $_POST["outdoors"];
-    $responses[1] = $_POST["travel_often"];
-    $responses[2] = $_POST["drive_to_work"];
-    $responses[3] = $_POST["fuel_efficiency_important"];
-    $responses[4] = $_POST["adrenaline_junkie"];
-
-// Count number of responses to determine segment id
-    $counts = array(0, 0, 0, 0, 0);
-    for ($x = 0; $x < count($counts); $x++) {
-        $counts[$responses[$x]]++;
-    }
-
-// Set segment equal to index of max value in array, or 0 if more than 1 max exists.
-    $maxKeys = array_keys($counts, max($counts));
-    if (count($maxKeys) == 1) {
-        $segment = $maxKeys[0] + 1;
-
-    } else {
-        $segment = 0;
-    }
-
-
-    /*
-      Executing SQL query
-    */
-
-    $findCustomer = "SELECT Online_Customer_ID from online_customer where online_customer.User_ID = '$userID'";
-
-    $findCustomerResult = mysqli_query($db, $findCustomer) or die("SQL error: " . mysqli_error($db));
-    $custRow = mysqli_fetch_array($findCustomerResult);
-
-// Insert results into recommendation table,
-    if ($custRow) {
-        // Customer exists in the customer table
-        // TODO: Add conditional check here to update record when customer already has recommendations.
-        $custID = $custRow['Online_Customer_ID'];
-        $findRecommendation = "SELECT RecommendIt_Result_ID FROM `recommendit_result` where recommendit_result.Online_Customer_ID = '$custID'";
-        $recommendResult = mysqli_query($db, $findRecommendation) or die("SQL error: " . mysqli_error($db));
-        $recRow = mysqli_fetch_array($recommendResult);
-
-        if ($recRow) {
-            $recID = $recRow['RecommendIt_Result_ID'];
-            // customer has recommendations, so we should update their results to match
-            $updateReccomendation = "UPDATE recommendit_result SET RecommendIt_Result_ID=$recID,
-          outdoors=$responses[0],travel_often=$responses[1], drive_to_work=$responses[2],
-          fuel_efficiency_important=$responses[3],adrenaline_junkie=$responses[4], Segment_ID= $segment,
-          Online_Customer_ID=$custID
-          WHERE RecommendIt_Result_ID = $recID";
-            mysqli_query($db, $updateReccomendation) or die("SQL error: " . mysqli_error($db));
-        } else {
-            // insert new recommendation into database, using customerID as RecommendIt_Result_ID
-            $insertRecommendation = "INSERT INTO `recommendit_result`(`RecommendIt_Result_ID`, `outdoors`, `travel_often`, `drive_to_work`,
-          `fuel_efficiency_important`, `adrenaline_junkie`, `Segment_ID`, `Online_Customer_ID`) 
-          VALUES ($custID, $responses[0], $responses[1], $responses[2], $responses[3], $responses[4], $segment, $custID)";
-            mysqli_query($db, $insertRecommendation) or die("SQL error: " . mysqli_error($db));
-        }
-    }
-}
 ?>
 <!-- Start Page Loading -->
 <div id="loader-wrapper">
@@ -140,18 +78,6 @@ if(!$salesAgent) {
                     <input type="text" name="Search" class="grey lighten-3 header-search-input z-depth-2"
                            placeholder="Search"/>
                 </div>
-                <!--
-                                    <ul class="right hide-on-med-and-down">
-                                        <li><a href="javascript:void(0);" class="blue darken-3 waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan"></i></a>
-                                        </li>
-                                        <li><a href="javascript:void(0);" class="blue darken-3 waves-effect waves-block waves-light"><i class="mdi-navigation-apps"></i></a>
-                                        </li>
-                                        <li><a href="javascript:void(0);" class="blue darken-3 waves-effect waves-block waves-light"><i class="mdi-social-notifications"></i></a>
-                                        </li>
-                                        <li><a href="#" data-activates="chat-out" class="blue darken-3 waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat"></i></a>
-                                        </li>
-                                    </ul>
-                -->
             </div>
         </nav>
 
@@ -191,23 +117,11 @@ if(!$salesAgent) {
                         </div>
                     </div>
                 </li>
-                <li class="bold active"><a href="user-vehicle-listings.php" class="waves-effect waves-cyan"><i
+                <li class="bold active"><a href="agent-dashboard.php" class="waves-effect waves-cyan"><i
                                 class="mdi-action-dashboard"></i> Dashboard</a>
                 </li>
-                <li class="bold"><a href="vehicle-listings.php" class="waves-effect waves-cyan"><i
-                                class="mdi-maps-directions-car"></i> All Vehicles</a>
+                <li><a href="manage-vehicles.php"><i class="mdi-action-receipt"></i>Manage Vehicles</a>
                 </li>
-                <?php
-                    if ($_SESSION['salesAgent']) {
-                        echo '<li><a href="manage-vehicles.php"><i class="mdi-action-receipt"></i>Manage Vehicles</a>
-                        </li>';
-                    }
-                    else {
-                        echo '<li class="bold"><a href="user-survey.php" class="waves-effect waves-cyan"><i
-                            class="mdi-social-whatshot"></i> Recommendation Quiz</a>
-                        </li>';
-                    }
-                ?>
                 <!--                <li class="li-hover">-->
                 <!--                    <div class="divider"></div>-->
                 <!--                </li>-->
@@ -256,34 +170,9 @@ if(!$salesAgent) {
                     <div class="row">
                         <div class="col s12 m12 l12">
                             <?php
-                            $personality = "";
-                            switch ($segment) {
-                                case 1:
-                                    $personality = "Adventurer";
-                                    break;
-                                case 2:
-                                    $personality = "Commuter";
-                                    break;
-                                case 3:
-                                    $personality = "Traveler";
-                                    break;
-                                case 4:
-                                    $personality = "Eco-Friendly";
-                                    break;
-                                case 5:
-                                    $personality = "Thrill-seeker";
-                                    break;
-                            }
+                                echo '<h5 class="breadcrumbs-title">Welcome to your sales dashboard, ' . $fname. ' ' .
+                                    $lname. '.</h5>';
 
-                            if ($personality != "") {
-                                echo '<h5 class="breadcrumbs-title">You are an ' . $personality . '. Here are your personalized vehicle recommendations.</h5>';
-                            }
-                            elseif ($salesAgent) {
-                                echo '<h5 class="breadcrumbs-title">Welcome to the sales dashboard.</h5>';
-                            }
-                            else {
-                                echo '<h5 class="breadcrumbs-title">We were unable to place you in just one segment, so here\'s our best sellers!</h5>';
-                            }
                             ?>
                             <ol class="breadcrumb">
                                 <li><a href="user-vehicle-listings.php">Dashboard</a></li>
@@ -299,48 +188,61 @@ if(!$salesAgent) {
             <!--start container-->
             <div class="container">
                 <div class="section">
-                    <!-- start blog list -->
-                    <div id="blog-posts" class="row">
-                        <div class="blog-sizer"></div>
 
                         <?php
-                        // Fetch Vehicles in users segment
-                        if($salesAgent) {
-                            $segmentQuery = "SELECT * FROM vehicle";
-                        }
-                        else {
-                            $segmentQuery = "SELECT * FROM vehicle where vehicle.Segment_ID = '$segment'";
+
+                        for ($i = 1; $i <= 5; $i++) {
+                            $segmentQuery = "SELECT * FROM vehicle where vehicle.Segment_ID = $i";
+                            $findVehiclesResult = mysqli_query($db, $segmentQuery) or die("SQL error: " . mysqli_error($db));
+
+                            while ($vehicleRow = mysqli_fetch_array($findVehiclesResult)) {
+                                $vehicleURL = $vehicleRow['Vehicle_URL'];
+                                $imgURL = $vehicleRow['Vehicle_Image_URL'];
+                                $make = $vehicleRow["Vehicle_Make"];
+                                $model = $vehicleRow["Vehicle_Model"];
+                                $year = $vehicleRow["Vehicle_Year"];
+                                $mileage = $vehicleRow["Vehicle_Mileage"];
+                                $price = $vehicleRow["Vehicle_Price"];
+
+                                echo '<div id="blog-posts" class="row">
+                                        <div class="blog-sizer"></div>
+                                            <div class="blog">
+                                            <div class="card">
+                                                <div class="card-image waves-effect waves-block waves-light">
+                                                    <a href="' . $vehicleURL . '"><img src="' . $imgURL . '" alt="blog-img">
+                                                    </a>
+                                                </div>
+                                                <div class="card-content">
+                                                    <p class="row">
+                                                        <span class="left">' . $mileage . ' miles</span>
+                                                        <span class="right">' . "$" . $price . '</span>
+                                                    </p>
+                                                    <h4 class="card-title grey-text text-darken-4"><a href="#" class="grey-text text-darken-4">' . $year . " " . $make . " " . $model . '</a>
+                                                    </h4>';
+                                switch ($i) {
+                                    case 1:
+                                        echo '<h4 style="color: coral">Adventurer</h4>';
+                                        break;
+                                    case 2:
+                                        echo '<h4 style="color: dodgerblue;">Commuter</h4>';
+                                        break;
+                                    case 3:
+                                        echo '<h4 style="color: rebeccapurple">Traveler</h4>';
+                                        break;
+                                    case 4:
+                                        echo '<h4 style="color: #00bfa5;">Eco-friendly</h4>';
+                                        break;
+                                    case 5:
+                                        echo '<h4 style="color: red">Sporty</h4>';
+                                        break;
+                                }
+
+
+                                echo '</div></div></div>';
+                            }
                         }
 
-                        $findVehiclesResult = mysqli_query($db, $segmentQuery) or die("SQL error: " . mysqli_error($db));
 
-                        while ($vehicleRow = mysqli_fetch_array($findVehiclesResult)) {
-                            $vehicleURL = $vehicleRow['Vehicle_URL'];
-                            $imgURL = $vehicleRow['Vehicle_Image_URL'];
-                            $make = $vehicleRow["Vehicle_Make"];
-                            $model = $vehicleRow["Vehicle_Model"];
-                            $year = $vehicleRow["Vehicle_Year"];
-                            $mileage = $vehicleRow["Vehicle_Mileage"];
-                            $price = $vehicleRow["Vehicle_Price"];
-
-                            echo '<div class="blog">
-                                        <div class="card">
-                                            <div class="card-image waves-effect waves-block waves-light">
-                                                <a href="' . $vehicleURL . '"><img src="' . $imgURL . '" alt="blog-img">
-                                                </a>
-                                            </div>
-                                            <div class="card-content">
-                                                <p class="row">
-                                                    <span class="left">' . $mileage . ' miles</span>
-                                                    <span class="right">' . "$" . $price . '</span>
-                                                </p>
-                                                <h4 class="card-title grey-text text-darken-4"><a href="#" class="grey-text text-darken-4">' . $year . " " . $make . " " . $model . '</a>
-                                    </h4>
-                                                <p class="blog-post-content">Click the image above to visit our main site for reservations!</p>
-                                            </div>
-                                        </div>
-                                    </div>';
-                        }
                         ?>
                     </div>
                     <!--/ end blog list -->

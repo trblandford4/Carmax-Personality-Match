@@ -1,47 +1,5 @@
 <?php
-    $username = "";
-    $password = "";
-    $userid = null;
-    $error = false;
-    $loginOK = null;
-
-    if (isset($_POST["submit"])) {
-        if (isset($_POST["username"])) $username = $_POST["username"];
-        if (isset($_POST["password"])) $password = $_POST["password"];
-        if (isset($_POST["remember"])) $remember = $_POST["remember"];
-    }
-
-    if (!$error) {
-        require_once("includes/db-connect.php");
-        /*
-          Executing SQL query
-        */
-        connectDB();
-        $sql="select User_ID, User_Username, User_Password from systemuser where User_Username = '$username'";
-
-        $result = mysqli_query($db, $sql) or die("SQL error: " . mysqli_error($db));
-        $row = mysqli_fetch_array($result);
-
-        if($row){
-            if(strcmp($password, $row["User_Password"]) == 0){
-                  $loginOK = true;
-                  print_r($loginOK);
-                  $userid = $row["User_ID"];
-            }
-            else {
-                $loginOK = false;
-            }
-        }
-
-
-        if($loginOK) {
-            session_start();
-            $_SESSION["userID"] = $userid;
-            $_SESSION["username"] = $username;
-
-            Header("Location:user-survey.php");
-        }
-    }
+include('includes/login.php'); // Includes Login Script
 ?>
 
 <!DOCTYPE html>
@@ -122,20 +80,19 @@
 <!--                </div>-->
                 <div class="row">
                     <div class="input-field col s6 m6 l6">
-                        <p class="margin medium-small"><a href="user-registration.html">Register Now!</a></p>
+                        <p class="margin medium-small"><a href="user-registration.php">Register Now!</a></p>
                     </div>
                     <div class="input-field col s6 m6 l6">
                         <p class="margin right-align medium-small"><a href="user-forgot-password.html">Forgot password?</a></p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s6 m6 l6">
                         <p class="margin medium-small">
-                            <?php if($loginOK==false) echo "<span style='color: red''>Username and password do not match.</span>"; ?>
+                            <span class="text-danger"><?php if (isset($errormsg)) { echo $errormsg; } ?></span>
                         </p>
                     </div>
                 </div>
-
 
             </form>
         </div>

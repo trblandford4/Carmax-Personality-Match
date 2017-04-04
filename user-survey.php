@@ -85,7 +85,7 @@
                             <form class="personalityQuiz" id="personalityQuiz" method="post" action="user-vehicle-listings.php">
                                 <div class="row">
                                     <div class="input-field col s10 offset-s1">
-                                        <select class="validate" name="outdoors" id="outdoors" data-error=".errorTxt1">
+                                        <select name="outdoors" id="outdoors" data-error=".errorTxt1">
                                             <option value="" disabled selected>Which activities sound the most fun to you?</option>
                                             <option value="0">Going on an all day hike </option>
                                             <option value="1">A quiet weekend at home </option>
@@ -177,35 +177,7 @@
 
         <!--plugins.js - Some Specific JS codes for Plugin Settings-->
         <script type="text/javascript" src="js/plugins.js"></script>
-<!--        <script type="text/javascript" src="js/plugins/jquery-validation/jquery.validate.min.js"></script>-->
-
-
-<!--        <script>-->
-<!--            $("#personalityQuiz").validate({-->
-<!--                    rules: {-->
-<!--                        activities:"required",-->
-<!--                        describe_you:"required",-->
-<!--                        most_important:"required",-->
-<!--                    },-->
-<!--                    //For custom messages-->
-<!--                    messages: {-->
-<!--                        uname:{-->
-<!--                            required: "Enter a username",-->
-<!--                            minlength: "Enter at least 5 characters"-->
-<!--                        },-->
-<!--                        curl: "Enter your website",-->
-<!--                    },-->
-<!--                    errorElement : 'div',-->
-<!--                    errorPlacement: function(error, element) {-->
-<!--                      var placement = $(element).data('error');-->
-<!--                      if (placement) {-->
-<!--                        $(placement).append(error)-->
-<!--                      } else {-->
-<!--                        error.insertAfter(element);-->
-<!--                      }-->
-<!--                    }-->
-<!--                 });-->
-<!--        </script>-->
+        <script type="text/javascript" src="js/j"></script>
 </body>
 
 
